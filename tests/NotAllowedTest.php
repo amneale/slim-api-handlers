@@ -9,36 +9,83 @@ use Slim\Http\Response;
 class NotAllowedTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @dataProvider methods
-     * @param $method
+     * @return array
      */
-    public function testResponseStatusCode($method, $expectedCode)
+    public function contentTypeProvider()
+    {
+        return [
+            ['application/json', '{'],
+            ['application/xml', '<?xml version="1.0"?>'],
+            ['text/xml', '<?xml version="1.0"?>'],
+            ['text/html', '<!DOCTYPE html>'],
+        ];
+    }
+
+    /**
+     * @dataProvider contentTypeProvider
+     *
+     * @param $contentType
+     * @param $startOfBody
+     */
+    public function testInvalidMethod($contentType, $startOfBody)
     {
         $handler = new NotAllowed(new Renderer(), true);
+        $allowed = ['GET', 'POST'];
 
+        $response = $handler->__invoke(
+            $this->getRequest($contentType, 'PUT'),
+            new Response(),
+            $allowed
+        );
+
+        $this->assertSame(405, $response->getStatusCode());
+        $this->assertSame($contentType, $response->getHeaderLine('Content-Type'));;
+        $this->assertTrue($response->hasHeader('Allow'));
+        $this->assertEquals(implode(', ', $allowed), $response->getHeaderLine('Allow'));
+        $this->assertSame(0, strpos((string) $response->getBody(), $startOfBody));
+    }
+    /**
+     * @dataProvider contentTypeProvider
+     *
+     * @param $contentType
+     * @param $startOfBody
+     */
+    public function testOptionsMethod($contentType, $startOfBody)
+    {
+        $handler = new NotAllowed(new Renderer(), true);
+        $allowed = ['GET', 'POST'];
+
+        $response = $handler->__invoke(
+            $this->getRequest($contentType, 'OPTIONS'),
+            new Response(),
+            $allowed
+        );
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame($contentType, $response->getHeaderLine('Content-Type'));
+        $this->assertTrue($response->hasHeader('Allow'));
+        $this->assertEquals(implode(', ', $allowed), $response->getHeaderLine('Allow'));
+        $this->assertSame(0, strpos((string) $response->getBody(), $startOfBody));
+    }
+
+    /**
+     * @param string $contentType
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Slim\Http\Request
+     */
+    protected function getRequest($contentType, $method)
+    {
         $request = $this->getMockBuilder('Slim\Http\Request')
             ->disableOriginalConstructor()
-            ->setMethods(['getMethod', 'getHeaderLine'])
             ->getMock();
+
+        $request->expects($this->once())
+            ->method('getHeaderLine')
+            ->willReturn($contentType);
 
         $request->expects($this->once())
             ->method('getMethod')
             ->willReturn($method);
 
-        $response = $handler->__invoke($request, new Response(), []);
-
-        $this->assertSame($expectedCode, $response->getStatusCode());
-    }
-
-    /**
-     * @return array
-     */
-    public function methods()
-    {
-        return [
-            ['GET', 405],
-            ['POST', 405],
-            ['OPTIONS', 200],
-        ];
+        return $request;
     }
 }

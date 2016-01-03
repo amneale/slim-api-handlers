@@ -26,7 +26,7 @@ class NotAllowed extends AbstractHandler
 
         $response = $response->withHeader(
             'Allow',
-            implode(',', $this->allowed)
+            implode(', ', $this->allowed)
         );
 
         return parent::__invoke($request, $response);
