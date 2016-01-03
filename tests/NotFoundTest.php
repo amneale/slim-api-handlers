@@ -3,7 +3,6 @@
 namespace Amneale\Slim\ApiHandlers\Tests;
 
 use Amneale\Slim\ApiHandlers\NotFound;
-use RKA\ContentTypeRenderer\Renderer;
 use Slim\Http\Response;
 
 class NotFoundTest extends \PHPUnit_Framework_TestCase
@@ -29,7 +28,7 @@ class NotFoundTest extends \PHPUnit_Framework_TestCase
      */
     public function testNotFound($contentType, $startOfBody)
     {
-        $handler = new NotFound(new Renderer());
+        $handler = new NotFound();
 
         $response = $handler->__invoke(
             $this->getRequest($contentType),

@@ -4,25 +4,23 @@ namespace Amneale\Slim\ApiHandlers;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use RKA\ContentTypeRenderer\Renderer;
 
 class Error extends AbstractHandler
 {
     /** @var bool */
-    protected $displayErrorDetails = false;
+    protected $displayErrorDetails;
 
-    /** @var Exception */
+    /** @var \Exception */
     protected $exception;
 
     /**
-     * @param Renderer $renderer
      * @param $displayErrorDetails
      */
-    public function __construct(Renderer $renderer, $displayErrorDetails)
+    public function __construct($displayErrorDetails = false)
     {
         $this->displayErrorDetails = $displayErrorDetails;
 
-        parent::__construct($renderer);
+        parent::__construct();
     }
 
     /**

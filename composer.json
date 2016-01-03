@@ -13,10 +13,10 @@
     ],
     "license": "MIT",
     "require": {
-        "slim/slim": "^3.0",
         "akrabat/rka-content-type-renderer": "^0.4.0"
     },
     "require-dev": {
+        "slim/slim": "^3.0",
         "phpunit/phpunit": "^5.1"
     },
     "autoload": {

@@ -11,12 +11,9 @@ abstract class AbstractHandler
     /** @var Renderer */
     protected $renderer;
 
-    /**
-     * @param Renderer $renderer
-     */
-    public function __construct(Renderer $renderer)
+    public function __construct()
     {
-        $this->renderer = $renderer;
+        $this->renderer = new Renderer();
     }
 
     /**

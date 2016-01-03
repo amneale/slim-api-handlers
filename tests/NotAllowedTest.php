@@ -3,7 +3,6 @@
 namespace Amneale\Slim\ApiHandlers\Tests;
 
 use Amneale\Slim\ApiHandlers\NotAllowed;
-use RKA\ContentTypeRenderer\Renderer;
 use Slim\Http\Response;
 
 class NotAllowedTest extends \PHPUnit_Framework_TestCase
@@ -29,7 +28,7 @@ class NotAllowedTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidMethod($contentType, $startOfBody)
     {
-        $handler = new NotAllowed(new Renderer(), true);
+        $handler = new NotAllowed();
         $allowed = ['GET', 'POST'];
 
         $response = $handler->__invoke(
@@ -52,7 +51,7 @@ class NotAllowedTest extends \PHPUnit_Framework_TestCase
      */
     public function testOptionsMethod($contentType, $startOfBody)
     {
-        $handler = new NotAllowed(new Renderer(), true);
+        $handler = new NotAllowed();
         $allowed = ['GET', 'POST'];
 
         $response = $handler->__invoke(
